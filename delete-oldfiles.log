@@ -1,0 +1,31 @@
+-------------------------------------------------------------------------------
+  Deleteold	::	Script to delete old files from folders
+-------------------------------------------------------------------------------
+ 
+   Started  :   8/11/2019, 2:12:49 PM
+ 
+   Folder   :   C:\datacache
+ 
+   Switches :   
+		-FolderPath
+			C:\datacache
+		-FileAge -1
+		-LogFile
+			C:\Repositories\Powershell\delete-oldfiles.log
+ 
+-------------------------------------------------------------------------------
+ 
+
+-------------------------------------------------------------------------------
+
+   Files               : 1
+   Filesize(MB)        : 0
+   Files Failed        : 0
+   Failedfile Size(MB) : 0
+   Folders             : 1
+   Folders Failed      : 0
+
+   Finished Time       : 8/11/2019, 2:12:49 PM
+   Total Time          : 00:00:00
+
+-------------------------------------------------------------------------------
