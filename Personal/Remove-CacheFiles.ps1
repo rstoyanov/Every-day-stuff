@@ -1,7 +1,7 @@
 
 <#   
 .SYNOPSIS   
-This script was created according to FACTSET pre-interview task. It checks the available free space on remote servers and if it is less
+This script was created according to FACTSET pre-interview task specifications. It checks the available free space on remote servers and if it is less
     
 .DESCRIPTION 
 The script checks the available free space on remote servers and if it is less than specified, deletes older files from specified cache folder.
