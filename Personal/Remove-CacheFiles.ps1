@@ -137,11 +137,11 @@ foreach ($s in $ServerName) {
         $diskSpace = $disk.DiskSpace
 
         # Checks if disk space is lower than the minimum value.
-        # If disk space is lower than the minimum value, it deletes older files in cache folder. 
-        Write-Log "Start cleaning cache folder on $s"
         if ($disk.DiskSpace -le $PercentFreeSpace) {
             Write-Log  "Free Disk Space on $psComputerName is $diskSpace%"
             Write-Log "Cleaning $FolderPath on $psComputerName"
+
+            # Deletes the files in cache directory
             if ($CreationTime) {
                 Write-Log "Deleting files based on CreationTime"
                 Invoke-Command -ComputerName $s -ScriptBlock {Get-ChildItem -Path $FolderPath -Recurse | Where-Object {$_.CreationTime -lt (Get-Date).AddHours(-$FileAgeHours)} | Remove-Item}
