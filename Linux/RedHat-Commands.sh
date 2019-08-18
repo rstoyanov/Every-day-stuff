@@ -169,8 +169,184 @@ cat file1 file2 > newfile
 # Split files 
 split -l 2 newfile sepfile # Exports each 2 lines to a separate file
 
-# Replace content of a file with another content
-sed 's/OldContnt/NewContent/g' tesftile
+# Replace content of a file with another content. # -i is used if you want to replace the content in the file. Without -i it only shows the replaced content on the screen.
+sed -i 's/OldContnt/NewContent/g' tesftile # g at the and stands for "global" and replaces the text everywhere in the file
+
+# Removes the old content from a file.
+sed -i 's/OldContnt//g' tesftile # -i is used if you want to replace the content in the file. Without -i it only shows the replaced content on the screen.
+
+
+# Deletes the whole line containting specified keyword
+sed -i '/keyword/d' testfile
+
+# Deletes empty lines
+sed -i '/^$/d' testfile
+
+# Removes the first line from the file
+sed -i '1d' testfile
+sed -i '1d,2d' testfile # Removes first 2 lines
+
+# Replaces tab with space
+sed -i '/\t/ /g' testfile
+
+# Adds empty line after each line of text
+sed -i G testfile
+
+# Replaces content except 1st row
+sed '1!s/Stoy/ /g' testfile
+
+# Replace text in vi
+:%s/Rado/Misha
+
+# USER AND GROUP MANAGEMENT
+
+# Create a user
+useradd -G users,admins -s /bin/bash -c "Radostin Stoyanov" -m -d /home/rstoyanov rstoyanov 
+
+# Modify user. Append user to another groups
+usermod -a -G powerusers,jirausers rstoyanov
+
+# Check user existance
+cat /etc/shadow
+cat /etc/passwd
+groups rstoyanov
+
+# Delete a uses and delete his home directory as well
+userdel -r rstoyanov # -r deletes it home directory
+
+# Create a group
+groupadd powerusers
+
+# Check what groups exist in the system
+cat /etc/group | grep powerusers
+
+# Delete a group
+groupdel powerusers
+
+# SWITCH USERS AND SUDO ACCESS
+
+# Switch to another user
+sudo su rstoyanov
+
+# Switch to root
+sudo su -
+
+# Modigying sudoers file
+sudo visudo
+
+# MONITOR USERS
+
+# Loggedon users
+users
+
+# Check who is logged in to the system
+who -a
+
+# Who is logged in whith more details
+w
+
+# Who using fineger. Provides some more details
+sudo yum install finger -y # It is not preinstalled, so we need to install it first.
+finger
+
+# Information about specific user
+id rstoyanov
+
+# Check last logins
+last | more
+
+# Extract only uniq users that have been logged in
+last | awk '{print $1}' | sort | uniq
+
+# TALKING TO USERS
+
+# Write message to the wall
+wall # Hit Enter
+
+Please logoff. This system is going down for maintenance
+
+-- Rado # Hit Ctrl+D
+
+# Write message in realtime to a specifig logged on user
+write rstoyanov # Hit Enter
+
+Hey Rado, please stop your script, because the server is running out of resources. 
+
+-- SysAdmin # Hit Ctrl+D
+
+# SYSTEM UTILITY COMMANDS
+
+date # displays the date and time
+date -s "Sun Aug 18 22:40 EEST 2019" # Setting date
+uptime # server uptime + logged on users
+hostname # hostname of the server
+uname -a #  tells you if you are running Linux or other *nix system and some details
+which "command" # tells you which command in which file is located
+cal # returns the calendar for this month
+cal 12 1985 # returns December 1985 :)
+cal 2019 # all months of 2019  
+bc # basic calculator in the terminal
+
+# PROCESSES AND JOBS
+
+# Check running processes
+ps -ef
+
+# Start a service
+systemctl start ntpd 
+
+# Stop a service
+systemctl stop ntpd
+
+# Enable autostart of a service
+systemctl enable ntpd 
+
+# Check the status of a service
+systemctl status ntpd 
+
+# See all services
+systemctl list-units --type service
+
+sytemctl list-units | grep httpd
+systemctl list-units --type mount
+
+# Service start log
+journalctl -xe
+
+# Monitor resources
+top 
+top -h # Shows the usage of top
+top -u rstoyanov # Shows user specific processes
+top -d 10 # Delays with 10 seconds
+
+# Kill a process
+kill processID 
+
+# Working with cron jobs
+crontab -l # lists all cron jons
+crontab -e # enters in edit mode
+
+# Crontab time intervals
+# minute          0-59 / *
+# hour            0-23 / *
+# day of month    1-31 / *
+# month           1-12 / *
+# day of week     0-7 / *
+
+# In this file is the information about the time of execution of daily, weekly, monthly jobs
+cat /etc/anacrontab 
+
+# For hourly crontab schedule
+cat /etc/cron.d/0hourly
+
+# PROCESS MANAGEMENT
+
+
+
+
+
+
+
 
 
 

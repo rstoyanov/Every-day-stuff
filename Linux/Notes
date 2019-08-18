@@ -1,0 +1,26 @@
+USER MANAGEMENT AND ROOT ACCESS
+
+By adding a user to group "wheel" you give him sudo access. Another group can be added in sudoers file using visudo
+
+IDENTITY MANAGEMENT
+
+IDM - is used for identity management in Red Hat environment
+WinBIND - is used in Linux to authenticate against Windows Active Directory
+OpenLDAP - Open source Directory management for Linux
+IBM Directory Server - A paid solution developed by IBM
+JumpCloud - Directory as a service
+
+PROCESS MANAGEMENT
+
+A daemon is a long-running background process that answers requests for services. The term originated with Unix, 
+but most operating systems use daemons in some form or another. In Unix, the names of daemons conventionally end in "d".
+ Some examples include inetd , httpd , nfsd , sshd , named , and lpd .
+
+ Crontab time intervals
+minute          0-59
+hour            0-23
+day of month    1-31
+month           1-12
+day of week     0-7
+
+If you want to run your scripts hourly, weekly or daily, you can copy the scipts in /etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly 
