@@ -341,7 +341,12 @@ cat /etc/cron.d/0hourly
 
 # PROCESS MANAGEMENT
 
+# FIREWALL MANAGEMENT
 
+# White-list a port in the firewall
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd --reload
+firewall-cmd --list-all
 
 
 
