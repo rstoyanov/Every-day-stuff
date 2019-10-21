@@ -348,7 +348,17 @@ sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 sudo firewall-cmd --reload
 firewall-cmd --list-all
 
+# JAVA 
 
+# Prints JVM Heap Size 
+java -XX:+PrintFlagsFinal -version | grep -iE 'HeapSize|PermSize|ThreadStackSize'
+
+# Set JVM Heap Size
+
+# Java HOME and PATH
+export JAVA_HOME=\opt\atlassian\jira\jre
+
+export PATH=$JAVA_HOME/bin:$PATH
 
 
 
