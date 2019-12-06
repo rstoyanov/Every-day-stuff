@@ -360,9 +360,20 @@ export JAVA_HOME=\opt\atlassian\jira\jre
 
 export PATH=$JAVA_HOME/bin:$PATH
 
+# Change hostname 
+hostnamectl set-hostname your-new-hostname
 
+# Displays the hostname and some more info
+hostnamectl
 
+# Get disk / partition information
+sudo fdisk -l
 
+# Check disk space
+df
+df /dev/sda2 
+ 
+ 
 
 
 
