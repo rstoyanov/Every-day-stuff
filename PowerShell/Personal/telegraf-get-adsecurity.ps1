@@ -25,11 +25,15 @@ function Get-ADSecurity{
     Write-Host "ad_accounts,host=$hostname,ad_value=PasswordLastSet,instance=$PwdUser status=1,pwdLastSetTime=$pwdResetTime"
     }
 
-    Write-Host "ad_accounts,host=$hostname,ad_value=ADAccountDisabled total_=$ADAccountDisabled"
-    Write-Host "ad_accounts,host=$hostname,ad_value=ADCountLockedOut total_=$ADCountLockedOut"
-    Write-Host "ad_accounts,host=$hostname,ad_value=ADCountPwdExpired total_=$ADCountPasswordExpired"
-    Write-Host "ad_accounts,host=$hostname,ad_value=PasswordLastSet total_=$counts"
-    Write-Host "ad_accounts,host=$hostname,ad_value=ADpwdNeverExp total_=$pwdNeverExp"
+    #Write-Host "ad_accounts,host=$hostname,ad_value=ADAccountDisabled total_=$ADAccountDisabled"
+    Write-Influx -Measure ad_stats -Tags @{Hostname=$hostname} -Metrics @{ADAccountDisabled=$ADAccountDisabled; 
+                                                                          ADCountLockedOut=$ADCountLockedOut;
+                                                                          ADCountPwdExpired=$ADCountPasswordExpired;
+                                                                          PasswordLastSet=$counts;
+                                                                          ADpwdNeverExp=$pwdNeverExp;
+                                                                          
+                                                                          } -Database telegraf -Server http://10.31.0.31:8086 -Verbose
+
 }
 
 Get-ADSecurity
