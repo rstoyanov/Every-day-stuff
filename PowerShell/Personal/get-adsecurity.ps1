@@ -20,7 +20,7 @@ function Get-ADStats{
     $ADAccountDisabled = (Search-ADAccount -AccountDisabled).count
     $ADCountLockedOut = (Search-ADAccount -LockedOut).count
     $ADCountPasswordExpired = (Search-ADAccount -PasswordExpired).count
-    $pwdNeverExp = (Get-ADUser -Filter * -Properties passwordneverexpires).count
+    $pwdNeverExp = (Get-ADUser -Filter * -Properties passwordneverexpires,enabled | Where-Object {($_.PasswordNeverExpires -eq $true) -and ($_.enabled -eq $true) -and ($_.DistinguishedName -notmatch "OU=Service Accounts")}).count
 
     Write-Influx -Measure ad_stats -Tags @{Domain=$hostname} -Metrics @{ADAccountDisabled=$ADAccountDisabled; 
         ADCountLockedOut=$ADCountLockedOut;
