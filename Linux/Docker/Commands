@@ -1,0 +1,3 @@
+# Performance stats of a container
+docker stats "container id"
+

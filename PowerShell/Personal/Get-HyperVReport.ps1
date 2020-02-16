@@ -3301,7 +3301,7 @@ Param (
  
     $outHtmlEnd ="
     </div><!--End ReportBody-->
-    <center><p style=""font-size:12px;color:#BDBDBD"">ScriptVersion: 1.7 | CreatedBy: Serhat AKINCI - Hyper-V MVP - @serhatakinci | Feedback: serhatakinci@gmail.com</p></center>
+    <center><p style=""font-size:12px;color:#BDBDBD"">ScriptVersion: 1.0 | CreatedBy: Radostin Stoyanov CIT</p></center>
     <br>
     </body>
     </html>"
@@ -3341,7 +3341,7 @@ Param (
  
             sPrint -Type 1 -Message "Sending e-mail..." -WriteToLogFile $True
  
-            $subject = "Hyper-V Environment Report"
+            $subject = "ESD Hyper-V Environment Report"
             $attachment = $ReportFile
             $MailTo = ($MailTo -join ',').ToString()
             $mailMessage = New-Object System.Net.Mail.MailMessage

@@ -17,7 +17,7 @@ function Write-Log {
  
         [Parameter(Mandatory=$false)] 
         [Alias('LogPath')] 
-        [string]$Path="C:\Repositories\PowerShellScripts\Logs\DeployService_$GlobalDate.log",
+        [string]$Path=(Get-Location).path,
          
         [Parameter(Mandatory=$false)] 
         [ValidateSet("Error","Warn","Info")] 
