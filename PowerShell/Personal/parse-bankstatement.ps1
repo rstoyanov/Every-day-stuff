@@ -15,6 +15,7 @@ $autoParking = ""
 $autoPenalty = ""
 $autoRegistration = ""
 $autoTyres = ""
+$autoRoadTax = "E-VINETKA"
 
 # Bari
 $bariEquipment = "PET NET","ZOOMALL"
@@ -32,6 +33,9 @@ $billsTelephone = ""
 $billsWater = "SOFIYSKA VODA"
 $billEntrance = ""
 
+# Cash Payments
+$cash = "АТМ","PHYRE"
+
 # Drinks
 $drinksAlcohol = ""
 $drinksCoffee = ""
@@ -45,22 +49,22 @@ $educationTuition = ""
 $family = ""
 
 # Food
-$foodGroceries = "BILLA","INMEDIO","FANTASTIKO","FANTASTICO","BALEV","EBAG","T-MARKET","ZELEN","LIDL","KAUFLAND","METRO","RECORD"
+$foodGroceries = "BILLA","INMEDIO","FANTASTIKO","FANTASTICO","BALEV","EBAG","T-MARKET","ZELEN","LIDL","KAUFLAND","METRO","RECORD","NewGen","DAHAPNA"
 $foodLunch = "BAKERS","BMS","K-EXPRESS","BG Invest","FAST FIVE"
 $foodResturant = "PETRUS","EDO","MARAYA","HAPPY","SWET","CONFETTI"
 
 # Gifts
-$gifts = ""
+$gifts = "DIMS","ZARIMEX"
 
 # Healthcare
 $healthBeauty = ""
 $healthEye = "GRAND OPTICS","ZEISS","JOY FASHION"
 $healthDental = "D-R RAYCHEV"
-$healthMedical = "ADZHIBADEM","SOFIYA MED","PHARM","PROPOLIS"
+$healthMedical = "ADZHIBADEM","SOFIYA MED","PHARM","PROPOLIS","SCS Franchise"
 
 # Home
 $homeElectronics = ""
-$homeFurnishing = ""
+$homeFurnishing = "B211 SOFIA","JUMBO"
 $homeMaintenance = "MAYSTOR","MAISTOR","MAGAZIN VAKAREL","MR.BRICOLAGE","PRAKTIKER","CAFEMAG"
 
 # Income
@@ -74,12 +78,12 @@ $incomeSalary = ""
 $investmentRealEstate = ""
 
 # Leisure
-$leisure = "EVENTIM","KINO ARENA",
+$leisure = "EVENTIM","KINO ARENA","CLUB EXE"
 
 # Personal
 $personalCare = "DM 060","LILLY"
-$personalClothing = "DEICHMANN","NEW YOURKER","MANIA","CELIO","ZARA","MAT STAR","ESPRIT","TUDORS"
-$personalElectronics = "TECHNOPOLIS", "ALIEXPRESS"
+$personalClothing = "DEICHMANN","NEW YOURKER","MANIA","CELIO","ZARA","MAT STAR","ESPRIT","TUDORS","VITOSHA BG777","H M/SOFIYA","LCW RETAIL"
+$personalElectronics = "TECHNOPOLIS", "ALIEXPRESS","ARDES"
 $personalSoftware = "LINKEDIN","GOOGLE","SYGIC","NAMECHEAP"
 
 # Services 
@@ -92,7 +96,7 @@ $sportFitness = "NEXT LEVEL"
 $sportMultisport = ""
 
 # Taxes
-$taxBank = ""
+$taxBank = "MODULA"
 $taxProperty = "EPAY BUDGET"
 
 # Transportation
@@ -101,7 +105,8 @@ $transportMetro = ""
 $transportTaxi = ""
 
 # Vacation
-$vacation = ""
+$vacation = "KAVALA","PROMACHONA","PAPPAS","MELISSIS","BOTEVGRAD","VINKOVCI","BEOGRAD","TRUPALE","NOVALJA","V.KOPANIC","OGULIN","JASENICE","KOLAN","MASLENICA","VRCIN",
+            "DIMITROVGRAD","IVANJA","NATURA"
 
 # Remont Bl. 92
 $remontBlok92 = ""
@@ -131,6 +136,9 @@ foreach ($r in $result) {
     elseif ($autoFuel | Where-Object {$r.Reason -match $_ } ) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Automobile";Subcategory="Fuel"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
     }
+    elseif ($autoRoadTax | Where-Object {$r.Reason -match $_ } ) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Automobile";Subcategory="RoadTax"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
     # Bari 
     elseif ($bariEquipment | Where-Object {$r.Reason -match $_ } ) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Bari";Subcategory="Equipment"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
@@ -154,6 +162,10 @@ foreach ($r in $result) {
     elseif ($billsWater | Where-Object {$r.Reason -match $_ } ) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Bills";Subcategory="Water"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
     }
+    # Cash
+    elseif ($cash | Where-Object {$r.Reason -match $_ } ) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Cash"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
     # Food
     elseif ($foodGroceries | Where-Object {$r.Reason -match $_ } ) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Food";Subcategory="Groceries"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
@@ -163,6 +175,10 @@ foreach ($r in $result) {
     }
     elseif ($foodResturant | Where-Object {$r.Reason -match $_}) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Food";Subcategory="Resturant"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
+    # Gifts $gifts
+    elseif ($gifts | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Gifts"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
     }
     # Healthcare
     elseif ($healthEye | Where-Object {$r.Reason -match $_}) {
@@ -174,10 +190,17 @@ foreach ($r in $result) {
     elseif ($healthMedical | Where-Object {$r.Reason -match $_}) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Healthcare";Subcategory="Medical"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
     }
-    # Home 
+    # Home  $homeFurnishing
+    elseif ($homeFurnishing | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Home";Subcategory="Furnishing"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }   
     elseif ($homeMaintenance | Where-Object {$r.Reason -match $_}) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Home";Subcategory="Maintenance"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
     }
+    #Leisure $leisure
+    elseif ($leisure | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Laisure"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }   
     # Personal 
     elseif ($personalCare | Where-Object {$r.Reason -match $_}) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Personal";Subcategory="Care"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
@@ -191,9 +214,32 @@ foreach ($r in $result) {
     elseif ($personalSoftware | Where-Object {$r.Reason -match $_}) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Personal";Subcategory="Software"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
     }
+    # Services
+    elseif ($serviceGovernment | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Services";Subcategory="Government"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
+    # Sport
+    elseif ($sportFitness | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Sport";Subcategory="Fitness"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
+    # Taxes $taxProperty
+    elseif ($taxBank | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Tax";Subcategory="Bank"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
+    elseif ($taxProperty | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Tax";Subcategory="Property"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
+    # Transport $transportSpark
+    elseif ($transportSpark | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Transport";Subcategory="Spark"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
     # Education
     elseif ($educationBooks | Where-Object {$r.Reason -match $_}) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Education";Subcategory="Books"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+    }
+    # Vacation
+    elseif ($vacation | Where-Object {$r.Reason -match $_}) {
+        #Write-Influx -Measure moneyflow -Tags @{Category="Vacation"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
     }
     else {
         Write-Host "Unknown Transaction" -ForegroundColor Yellow
