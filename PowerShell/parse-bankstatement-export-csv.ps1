@@ -134,44 +134,44 @@ foreach ($t in $transactions) {
 
 ### Assign a category to a record.
 $resultCSV = @()
+$bank = "unicredit bank"
+
 foreach ($r in $result) {
     
     # Automobile 
     if ($autoAnnualCheck | Where-Object {$r.Reason -match $_ } ) {
         $category = "Automobile"
         $subcategory = "AnnualCheck"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                       PaymentDateTime = $r.PaymentDateTime;
-                                                       Reason = $r.Reason;
-                                                       Category = $category;
-                                                       Subcategory = $subcategory}
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                        date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                        comment = $r.Reason;
+                                                        bank = $bank;
+                                                        category = "$category > $subcategory";}
     }
     elseif ($autoFuel | Where-Object {$r.Reason -match $_ } ) {
         $category = "Automobile"
         $subcategory = "Fuel"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                        PaymentDateTime = $r.PaymentDateTime;
-                                                        Reason = $r.Reason;
-                                                        Category = $category;
-                                                        Subcategory = $subcategory}
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                        date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                        comment = $r.Reason;
+                                                        bank = $bank;
+                                                        category = "$category > $subcategory";}
     }
     elseif ($autoRoadTax | Where-Object {$r.Reason -match $_ } ) {
         $category = "Automobile"
         $subcategory = "RoadTax"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                        PaymentDateTime = $r.PaymentDateTime;
-                                                        Reason = $r.Reason;
-                                                        Category = $category;
-                                                        Subcategory = $subcategory}
-    }
+        $resultCSV += New-object psobject -property  @{amount = $r.Amount;
+                                                        date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                        comment = $r.Reason;
+                                                        category = "$category > $subcategory";}
+        }
     elseif ($autoInsurance | Where-Object {$r.Reason -match $_ } ) {
         $category = "Automobile"
         $subcategory = "Insurance"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                        PaymentDateTime = $r.PaymentDateTime;
-                                                        Reason = $r.Reason;
-                                                        Category = $category;
-                                                        Subcategory = $subcategory}
+        $resultCSV += New-object psobject -property  @{amount = $r.Amount;
+                                                        date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                        comment = $r.Reason;
+                                                        category = "$category > $subcategory";}
     }
     # Bari 
     elseif ($bariEquipment | Where-Object {$r.Reason -match $_ } ) {
