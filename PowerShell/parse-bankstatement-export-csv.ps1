@@ -1,7 +1,7 @@
-
+﻿
 #[xml]$statement = Get-Content -Path "C:\Users\radostin.s\Documents\report.xml"
 #$transactions = $statement.APAccounts.ArrayOfAPAccounts.APAccount.BankAccount.BankAccountMovements.ArrayOfBankAccountMovements.BankAccountMovement
-[xml]$statement = Get-Content -Path "C:\Users\radostin.s\Documents\report.xml"
+[xml]$statement = Get-Content -Path "C:\Users\radostin.s\Documents\reports\main.xml"
 $transactions = $statement.Items.AccountMovement
 
 ### Category list
@@ -11,7 +11,7 @@ $autoAnnualCheck = ""
 $autoCarWash = ""
 $autoEquipment = ""
 $autoFuel = "SHELL","OMV","PBZTPETROL","EKO"
-$autoInsurance = "47041917220001115","BG11119002606465"
+$autoInsurance = "полица","BG11119002606465"
 $autoMaintenance = ""
 $autoOwnershipTax = ""
 $autoParking = ""
@@ -44,9 +44,9 @@ $drinksAlcohol = ""
 $drinksCoffee = "SPETEMA"
 
 # Education
-$educationBooks = "Audible","CIELA","UDEMY","HELIKON","ORANGE"
+$educationBooks = "Audible","CIELA","HELIKON","ORANGE"
 $educationOther = ""
-$educationTuition = ""
+$educationTuition = "UDEMY"
 
 # Family
 $family = ""
@@ -116,6 +116,9 @@ $vacation = "KAVALA","PROMACHONA","PAPPAS","MELISSIS","BOTEVGRAD","VINKOVCI","BE
 # Remont Bl. 92
 $remontBlok92 = ""
 
+# To be sorted
+$Unknown = "epay.bg"
+
 
 
 $result = @()
@@ -138,182 +141,378 @@ $bank = "unicredit bank"
 
 foreach ($r in $result) {
     
+    # Creates an object with the fields needed for the CSV.
+<#    $property = @{amount = ([float]$r.Amount * -1);
+                date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                comment = $r.Reason;
+                bank = $bank;
+                category = "$category > $subcategory";}
+#>
+<#    $propertyTax = @{amount = ([float]$r.Amount * -1);
+                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                    comment = $r.BankReason;
+                    bank = $bank;
+                    category = "$category > $subcategory";}
+#>    
     # Automobile 
     if ($autoAnnualCheck | Where-Object {$r.Reason -match $_ } ) {
         $category = "Automobile"
         $subcategory = "AnnualCheck"
         $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
-                                                        date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
-                                                        comment = $r.Reason;
-                                                        bank = $bank;
-                                                        category = "$category > $subcategory";}
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($autoFuel | Where-Object {$r.Reason -match $_ } ) {
         $category = "Automobile"
         $subcategory = "Fuel"
         $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
-                                                        date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
-                                                        comment = $r.Reason;
-                                                        bank = $bank;
-                                                        category = "$category > $subcategory";}
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($autoRoadTax | Where-Object {$r.Reason -match $_ } ) {
         $category = "Automobile"
         $subcategory = "RoadTax"
-        $resultCSV += New-object psobject -property  @{amount = $r.Amount;
-                                                        date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
-                                                        comment = $r.Reason;
-                                                        category = "$category > $subcategory";}
-        }
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
+    }
     elseif ($autoInsurance | Where-Object {$r.Reason -match $_ } ) {
         $category = "Automobile"
         $subcategory = "Insurance"
-        $resultCSV += New-object psobject -property  @{amount = $r.Amount;
-                                                        date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
-                                                        comment = $r.Reason;
-                                                        category = "$category > $subcategory";}
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Bari 
     elseif ($bariEquipment | Where-Object {$r.Reason -match $_ } ) {
         $category = "Bari"
         $subcategory = "Equipment"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                        PaymentDateTime = $r.PaymentDateTime;
-                                                        Reason = $r.Reason;
-                                                        Category = $category;
-                                                        Subcategory = $subcategory}
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($bariHealth | Where-Object {$r.Reason -match $_ } ) {
         $category = "Bari"
         $subcategory = "Healthcare"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                        PaymentDateTime = $r.PaymentDateTime;
-                                                        Reason = $r.Reason;
-                                                        Category = $category;
-                                                        Subcategory = $subcategory}
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     #Bills 
     elseif ($billsElectricity | Where-Object {$r.Reason -match $_ } ) {
         $category = "Bills"
         $subcategory = "Electricity"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                        PaymentDateTime = $r.PaymentDateTime;
-                                                        Reason = $r.Reason;
-                                                        Category = $category;
-                                                        Subcategory = $subcategory}
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($billsHeating | Where-Object {$r.Reason -match $_ } ) {
         $category = "Bills"
         $subcategory = "Heating"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                        PaymentDateTime = $r.PaymentDateTime;
-                                                        Reason = $r.Reason;
-                                                        Category = $category;
-                                                        Subcategory = $subcategory}
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($billsTvInternet | Where-Object {$r.Reason -match $_ } ) {
         $category = "Bills"
         $subcategory = "Internet"
-        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
-                                                        PaymentDateTime = $r.PaymentDateTime;
-                                                        Reason = $r.Reason;
-                                                        Category = $category;
-                                                        Subcategory = $subcategory}
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($billsSOT | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Bills";Subcategory="SOT"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Bills"
+        $subcategory = "SOT"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($billsWater | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Bills";Subcategory="Water"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Bills"
+        $subcategory = "Water"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Cash
     elseif ($cash | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Cash"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Cash"
+        $subcategory = "Payments"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Drinks 
     elseif ($drinksCoffee  | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Drinks";Subcategory="Coffee"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Drinks"
+        $subcategory = "Coffee"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
+    }
+    # Education 
+    elseif ($educationBooks | Where-Object {$r.Reason -match $_}) {
+        $category = "Education"
+        $subcategory = "Books"
+         $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
+    }
+    elseif ($educationTuition | Where-Object {$r.Reason -match $_}) {
+        $category = "Education"
+        $subcategory = "Tuition"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Food
     elseif ($foodGroceries | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Food";Subcategory="Groceries"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Food"
+        $subcategory = "Groceries"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($foodLunch | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Food";Subcategory="Lunch"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Food"
+        $subcategory = "Lunch"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($foodResturant | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Food";Subcategory="Resturant"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Food"
+        $subcategory = "Resturant"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Gifts $gifts
     elseif ($gifts | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Gifts"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Gifts"
+        $subcategory = "All"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Healthcare
     elseif ($healthEye | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Healthcare";Subcategory="Eyecare"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Health"
+        $subcategory = "Eyecare"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($healthDental | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Healthcare";Subcategory="Dental"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Health"
+        $subcategory = "Dental"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($healthMedical | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Healthcare";Subcategory="Medical"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Health"
+        $subcategory = "Medical"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Home  $homeFurnishing
     elseif ($homeFurnishing | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Home";Subcategory="Furnishing"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Home"
+        $subcategory = "Furnishing"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }   
     elseif ($homeMaintenance | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Home";Subcategory="Maintenance"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Home"
+        $subcategory = "Maintenance"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     #Leisure $leisure
     elseif ($leisure | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Laisure"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Leisure"
+        $subcategory = "All"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }   
     # Personal 
     elseif ($personalCare | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Personal";Subcategory="Care"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Personal"
+        $subcategory = "Care"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($personalClothing | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Personal";Subcategory="Clothing"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Personal"
+        $subcategory = "Clothing"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($personalElectronics | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Personal";Subcategory="Electronics"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Personal"
+        $subcategory = "Electronics"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($personalSoftware | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Personal";Subcategory="Software"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Personal"
+        $subcategory = "Software"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Services
     elseif ($serviceGovernment | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Services";Subcategory="Government"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Service"
+        $subcategory = "Government"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Sport
     elseif ($sportFitness | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Sport";Subcategory="Fitness"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Sport"
+        $subcategory = "Fitness"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
-    # Taxes $taxBankOther
+    # Taxes
     elseif ($taxBank | Where-Object {$r.BankReason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Tax";Subcategory="Bank"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Taxes"
+        $subcategory = "Bank"
+        $resultCSV += New-object psobject -property @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.BankReason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($taxBankInterest | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Tax";Subcategory="BankInterest"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Taxes"
+        $subcategory = "BankInterest"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($taxBankOther | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Tax";Subcategory="BankOther"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Taxes"
+        $subcategory = "BankOther"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     elseif ($taxProperty | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Tax";Subcategory="Property"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Taxes"
+        $subcategory = "Property"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Transport $transportSpark
     elseif ($transportSpark | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Transport";Subcategory="Spark"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
-    }
-    # Education
-    elseif ($educationBooks | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Education";Subcategory="Books"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Transport"
+        $subcategory = "Spark"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     # Vacation
     elseif ($vacation | Where-Object {$r.Reason -match $_}) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Vacation"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Vacation"
+        $subcategory = "All"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
+    }
+    # To be sorted
+    elseif ($unknown | Where-Object {$r.Reason -match $_}) {
+        $category = "Unknown"
+        $subcategory = "All"
+        $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
+                                                    date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
+                                                    comment = $r.Reason;
+                                                    bank = $bank;
+                                                    category = "$category > $subcategory";}
     }
     else {
         Write-Host "Unknown Transaction" -ForegroundColor Yellow
@@ -327,4 +526,4 @@ foreach ($r in $result) {
 
 }
 $path = (Get-Location).path
-return $resultCSV | Export-Csv "$path\money-manager-export.csv" -Encoding UTF8
+return $resultCSV | Export-Csv "$path\import_main_expense.csv" -Encoding UTF8
