@@ -1,4 +1,5 @@
-﻿#[xml]$statement = Get-Content -Path "C:\Users\radostin.s\Documents\report.xml"
+
+#[xml]$statement = Get-Content -Path "C:\Users\radostin.s\Documents\report.xml"
 #$transactions = $statement.APAccounts.ArrayOfAPAccounts.APAccount.BankAccount.BankAccountMovements.ArrayOfBankAccountMovements.BankAccountMovement
 [xml]$statement = Get-Content -Path "C:\Users\radostin.s\Documents\report.xml"
 $transactions = $statement.Items.AccountMovement
@@ -132,38 +133,92 @@ foreach ($t in $transactions) {
 #return $result
 
 ### Assign a category to a record.
-
+$resultCSV = @()
 foreach ($r in $result) {
     
     # Automobile 
     if ($autoAnnualCheck | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Automobile";Subcategory="AnnualCheck"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Automobile"
+        $subcategory = "AnnualCheck"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                       PaymentDateTime = $r.PaymentDateTime;
+                                                       Reason = $r.Reason;
+                                                       Category = $category;
+                                                       Subcategory = $subcategory}
     }
     elseif ($autoFuel | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Automobile";Subcategory="Fuel"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Automobile"
+        $subcategory = "Fuel"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                        PaymentDateTime = $r.PaymentDateTime;
+                                                        Reason = $r.Reason;
+                                                        Category = $category;
+                                                        Subcategory = $subcategory}
     }
     elseif ($autoRoadTax | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Automobile";Subcategory="RoadTax"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Automobile"
+        $subcategory = "RoadTax"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                        PaymentDateTime = $r.PaymentDateTime;
+                                                        Reason = $r.Reason;
+                                                        Category = $category;
+                                                        Subcategory = $subcategory}
     }
     elseif ($autoInsurance | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Automobile";Subcategory="Insurance"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Automobile"
+        $subcategory = "Insurance"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                        PaymentDateTime = $r.PaymentDateTime;
+                                                        Reason = $r.Reason;
+                                                        Category = $category;
+                                                        Subcategory = $subcategory}
     }
     # Bari 
     elseif ($bariEquipment | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Bari";Subcategory="Equipment"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Bari"
+        $subcategory = "Equipment"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                        PaymentDateTime = $r.PaymentDateTime;
+                                                        Reason = $r.Reason;
+                                                        Category = $category;
+                                                        Subcategory = $subcategory}
     }
     elseif ($bariHealth | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Bari";Subcategory="Health"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Bari"
+        $subcategory = "Healthcare"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                        PaymentDateTime = $r.PaymentDateTime;
+                                                        Reason = $r.Reason;
+                                                        Category = $category;
+                                                        Subcategory = $subcategory}
     }
     #Bills 
     elseif ($billsElectricity | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Bills";Subcategory="Electricity"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Bills"
+        $subcategory = "Electricity"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                        PaymentDateTime = $r.PaymentDateTime;
+                                                        Reason = $r.Reason;
+                                                        Category = $category;
+                                                        Subcategory = $subcategory}
     }
     elseif ($billsHeating | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Bills";Subcategory="Heating"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Bills"
+        $subcategory = "Heating"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                        PaymentDateTime = $r.PaymentDateTime;
+                                                        Reason = $r.Reason;
+                                                        Category = $category;
+                                                        Subcategory = $subcategory}
     }
     elseif ($billsTvInternet | Where-Object {$r.Reason -match $_ } ) {
-        #Write-Influx -Measure moneyflow -Tags @{Category="Bills";Subcategory="TvInternet"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
+        $category = "Bills"
+        $subcategory = "Internet"
+        $resultCSV += New-object psobject -property  @{Amount = $r.Amount;
+                                                        PaymentDateTime = $r.PaymentDateTime;
+                                                        Reason = $r.Reason;
+                                                        Category = $category;
+                                                        Subcategory = $subcategory}
     }
     elseif ($billsSOT | Where-Object {$r.Reason -match $_ } ) {
         #Write-Influx -Measure moneyflow -Tags @{Category="Bills";Subcategory="SOT"} -Metrics @{Amount=$r.Amount;DateTime=$r.DateTime;Reason=$r.Reason} -Database money -Server $influxAddress -Verbose 
@@ -271,3 +326,5 @@ foreach ($r in $result) {
     }    
 
 }
+$path = (Get-Location).path
+return $resultCSV | Export-Csv "$path\money-manager-export.csv" -Encoding UTF8
