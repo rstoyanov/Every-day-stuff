@@ -231,7 +231,7 @@ foreach ($r in $result) {
     }
     elseif ($billsTvInternet | Where-Object {$r.Reason -match $_ } ) {
         $category = "Bills"
-        $subcategory = "Internet"
+        $subcategory = "TVInternet"
         $resultCSV += New-object psobject -property  @{amount = ([float]$r.Amount * -1);
                                                     date = $r.PaymentDateTime.Split("T") | Select-Object -First 1;
                                                     comment = $r.Reason;
