@@ -1,3 +1,5 @@
-# checks the size of a DB
+# Check database size
 du -sh /var/lib/influxdb/data/<db name>
 
+# Check the size of the database
+du -sh /var/lib/influxdb/data/<db name>

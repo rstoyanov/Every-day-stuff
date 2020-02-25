@@ -1,3 +1,0 @@
-# Check database size
-du -sh /var/lib/influxdb/data/<db name>
-
