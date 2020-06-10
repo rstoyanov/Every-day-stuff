@@ -1,0 +1,24 @@
+# Initialize the directory
+git init 
+# Add the files for commit
+git add . 
+# Remove the file from commit
+git rm file.txt 
+# Check if there is anything to commit 
+git status
+# Commit changes
+git commit -m "Initial Commit"
+# Create ignore file to skip files to be pushed to the remore repo
+touch .gitignore 
+# Create a new branch
+git branch dev
+# Switch to branch dev
+git checkout dev
+# Add repository
+git remote add origin https://github.com/rstoyanov/realestatescrapper.git
+# Push changes to the specific branch
+git push -u origin dev
+
+
+
+
