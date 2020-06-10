@@ -1,0 +1,7 @@
+Dear ${PERSON_NAME}, 
+This is a test message.
+
+${MESSAGE_CONTENT}
+ 
+Regards
+

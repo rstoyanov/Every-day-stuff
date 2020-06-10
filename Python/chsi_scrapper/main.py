@@ -61,21 +61,20 @@ print(mycursor.rowcount, "was inserted.")
 
 ### Send the result to email
 
-"""
+
 import smtplib
+import config
 
 from string import Template
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-MY_ADDRESS = 'email@gmail.com'
-PASSWORD = 'password'
-
 def get_contacts(filename):
+
     """
-    #Return two lists names, emails containing names and email addresses
-    #read from a file specified by filename.
+    Return two lists names, emails containing names and email addresses
+    read from a file specified by filename.
     """
     
     names = []
@@ -88,8 +87,8 @@ def get_contacts(filename):
 
 def read_template(filename):
     """
-    #Returns a Template object comprising the contents of the 
-    #file specified by filename.
+    Returns a Template object comprising the contents of the 
+    file specified by filename.
     """
     
     with open(filename, 'r', encoding='utf-8') as template_file:
@@ -101,9 +100,9 @@ def main():
     message_template = read_template('message.txt')
 
     # set up the SMTP server
-    s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    s = smtplib.SMTP(host=config.SERVER, port=config.PORT)
     s.starttls()
-    s.login(MY_ADDRESS, PASSWORD)
+    s.login(config.EMAIL config.PASSWORD)
 
     # For each contact, send the email:
     for name, email in zip(names, emails):
@@ -116,9 +115,9 @@ def main():
         print(message)
 
         # setup the parameters of the message
-        msg['From']=MY_ADDRESS
+        msg['From']=config.EMAIL
         msg['To']=email
-        msg['Subject']="This is TEST"
+        msg['Subject']="Latest ads"
         
         # add in the message body
         msg.attach(MIMEText(message, 'plain'))
@@ -132,5 +131,3 @@ def main():
     
 if __name__ == '__main__':
     main()
-
-"""
