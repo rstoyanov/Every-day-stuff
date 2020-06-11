@@ -1,24 +1,31 @@
-import requests
-from bs4 import BeautifulSoup
-
 URL = 'http://sales.bcpea.org/bg/properties.html?court=28&type=8&city=1'
 #URL = 'http://sales.bcpea.org/bg/properties.html?court=28&type=3&city=1'
-page = requests.get(URL)
 
-soup = BeautifulSoup(page.content, 'html.parser')
-results = soup.find(id='content')
-job_elems = results.find_all('li')
+def scrap(URL):
 
-result = ""
+    import requests
+    from bs4 import BeautifulSoup
 
-for job_elem in job_elems:
-    title = job_elem.h2.a.text
-    price = job_elem.div.text.split()
-    price = price[2]
-    details = " ".join(job_elem.p.text.split())
-    link = job_elem.find('a').get('href')
-    link = "http://sales.bcpea.org" + link
-    result += "{}, {}, {}, Link: {} \n\n".format(title,price,details,link)
+    page = requests.get(URL)
+
+    soup = BeautifulSoup(page.content, 'html.parser')
+    results = soup.find(id='content')
+    content_elems = results.find_all('li')
+
+    result = ""
+
+    for content_elem in content_elems:
+        title = content_elem.h2.a.text
+        price = content_elem.div.text.split()
+        price = price[2]
+        details = " ".join(content_elem.p.text.split())
+        link = content_elem.find('a').get('href')
+        link = "http://sales.bcpea.org" + link
+        result += "{}, {}, {}, Link: {} \n\n".format(title,price,details,link)
+    return result
+
+content = scrap(URL)
+
 
 ### Send the result to email
 
@@ -71,7 +78,7 @@ def main():
         message = message_template.substitute(PERSON_NAME=name.title())
 
         # Prints out the message body for our sake
-        print(result)
+        print(content)
 
         # setup the parameters of the message
         msg['From']=config.EMAIL
@@ -79,7 +86,7 @@ def main():
         msg['Subject']="Latest ads"
         
         # add in the message body
-        msg.attach(MIMEText(result, 'plain'))
+        msg.attach(MIMEText(content, 'plain'))
         
         # send the message via the server set up earlier.
         s.send_message(msg)
