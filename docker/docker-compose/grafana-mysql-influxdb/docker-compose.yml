@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+    influxdb:
+        image: influxdb:latest
+        restart: always
+        container_name: influxdb
+        ports:
+        - "8083:8083"
+        - "8086:8086"
+        - "8090:8090"
+        env_file:
+        - 'env.influxdb'
+        volumes:
+        # Data persistency
+        # sudo mkdir -p /srv/docker/influxdb/data
+        - /srv/docker/influxdb/data:/var/lib/influxdb
+
+    mysql:
+        image: mysql:5.7
+        restart: always
+        container_name: mysql
+        ports:
+        # <Port exposed> : < MySQL Port running inside container>
+        - '3306:3306'
+        expose:
+        # Opens port 3306 on the container
+        - '3306'
+        # Where our data will be persisted
+        environment: 
+        - MYSQL_DATABASE=${DB_DATABASE}
+        - MYSQL_USER=${DB_USER}
+        - MYSQL_PASSWORD=${DB_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+        - TZ=${TIMEZONE}
+        volumes:
+        # sudo mkdir -p /srv/docker/mysql/data
+        - /srv/docker/mysql/data:/var/lib/mysql
+
+    grafana:
+        image: grafana/grafana:latest
+        restart: always
+        container_name: grafana
+        ports:
+            - "80:3000"
+        env_file:
+            - 'env.grafana'
+        user: "0"
+        links:
+            - influxdb
+        volumes:
+            # Data persistency
+            # sudo mkdir -p /srv/docker/grafana/data; chown 472:472 /srv/docker/grafana/data
+            - /srv/docker/grafana/data:/var/lib/grafana
+
+    adminer:
+        image: adminer
+        restart: always
+        container_name: adminer
+        ports:
+            - 8080:8080
