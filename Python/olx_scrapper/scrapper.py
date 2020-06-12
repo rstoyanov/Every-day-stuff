@@ -82,8 +82,8 @@ def scrap_olx(olx_url):
         price = content_elem.find('p', class_='price').text.strip()
         details = content_elem.find('span').text
         link = content_elem.find('a').get('href').split('#')[0]
-        result += "Обяви от OLX \n\n {}, {}, {}, Link: {} \n\n".format(title,price,details,link)
-        return result
+        result += "{}, {}, {}, Link: {} \n\n".format(title,price,details,link)
+    return result
 
 content_sales = scrap_sales(sales_url)
 content_imoti = scrap_imoti(imoti_url)
