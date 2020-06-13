@@ -1,6 +1,25 @@
-URL = 'https://www.olx.bg/nedvizhimi-imoti/prodazhbi/garazhi-parkomesta/oblast-sofiya-grad/q-%D0%B3%D0%B0%D1%80%D0%B0%D0%B6/'
+import config
+URL = config.URL_OLX
 
-def scrap(URL):
+def send_email(content):
+    import smtplib
+    from email.message import EmailMessage
+
+    msg = EmailMessage()
+    msg.set_content(content)
+
+    msg['Subject'] = config.SUBJECT
+    msg['From'] = config.FROM
+    msg['To'] = config.TO
+
+    s = smtplib.SMTP(host=config.SERVER, port=config.PORT)
+    s.starttls()
+    s.login(config.EMAIL, config.PASSWORD)
+
+    s.send_message(msg)
+    s.quit()
+
+def scrap_olx(URL):
 
     import requests
     from bs4 import BeautifulSoup
@@ -21,6 +40,7 @@ def scrap(URL):
         result += "{}, {}, {}, Link: {} \n\n".format(title,price,details,link)
     return result
     
-content = scrap(URL)
+content = scrap_olx(URL)
+send_email(content)
 
-print(content)
+
