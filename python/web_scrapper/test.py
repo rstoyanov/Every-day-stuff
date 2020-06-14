@@ -129,3 +129,9 @@ if config.AVERAGE_PRICE_M2_ENABLED == True:
     price_list_m2 = scrap_imoti(config.URL_AVG_PRICE_M2)[1]
     avg = round(calculate_average(price_list_m2))
     print(avg)
+
+
+
+
+
+
