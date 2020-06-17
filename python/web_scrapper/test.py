@@ -1,6 +1,10 @@
 # The settings used in this file are imported from config.py
 import config
 
+import time
+import datetime
+import pickle
+
 sites = config.URLS
 
 # A function for calculating average prices. Takes list of prices as a parameter.
@@ -27,6 +31,27 @@ def send_email(content,subject):
     s.send_message(msg)
     s.quit()
 
+# Insert into MySQL 
+def write_db(unix_time,type,price):
+    # pip install mysql-connector-python
+    import mysql.connector
+
+    db = mysql.connector.connect(
+    host = config.MYSQL_HOST,
+    user = config.MYSQL_USER,
+    password = config.MYSQL_PASS,
+    database = config.MYSQL_DB
+    ) 
+
+    mycursor = db.cursor()
+    
+    sql = "INSERT INTO avg_prices_m2 (unix_time,type,price) VALUES (%s, %s, %s)"
+    val = unix_time,type,price
+
+    mycursor.execute(sql, val)
+    db.commit()
+    print(mycursor.rowcount, "was inserted.")
+
 # Scrapper for public sales website: http://sales.bcpea.org/
 def scrap_sales(URL):
 
@@ -34,11 +59,28 @@ def scrap_sales(URL):
     from bs4 import BeautifulSoup
 
     page = requests.get(URL)
+    soup = BeautifulSoup(page.text, 'lxml')
+    page_content = soup.select('.pager')
+    page_list_raw = page_content[0].text.split()
+    page_list = [int(p) for p in page_list_raw if p.isdigit()]
+
+    for page in range(page_list)
+        URL_page = URL.index(URL)  
+        print(URL_page)
+        
+scrap_sales('http://sales.bcpea.org/bg/properties.html?type=16')
+
 
     soup = BeautifulSoup(page.content, 'html.parser')
     results = soup.find(id='content')
     content_elems = results.find_all('li')
 
+    try:
+        with open('sales_list.txt', 'rb') as f:
+            ad_list = pickle.load(f)
+    except IOError:
+        ad_list = []
+    
     result = ""
 
     for content_elem in content_elems:
@@ -48,7 +90,15 @@ def scrap_sales(URL):
         details = " ".join(content_elem.p.text.split())
         link = content_elem.find('a').get('href')
         link = "http://sales.bcpea.org" + link
-        result += "{}, {}, {}.\n {} \n\n".format(title,price,details,link)
+        ad = "{}, {}, {}.\n {} \n\n".format(title,price,details,link)
+        
+        if ad not in ad_list:
+            ad_list.append(ad)
+            result += ad
+
+    with open('sales_list.txt', 'wb') as f:
+        pickle.dump(ad_list, f)            
+
     return result
 
 # Scrapper for olx.bg
@@ -63,6 +113,12 @@ def scrap_olx(URL):
     results = soup.find(id='offers_table')
     content_elems = results.find_all('div', class_ = 'offer-wrapper')
 
+    try:
+        with open('olx_list.txt', 'rb') as f:
+            ad_list = pickle.load(f)
+    except IOError:
+        ad_list = []
+
     result = ""
 
     for content_elem in content_elems:
@@ -70,7 +126,15 @@ def scrap_olx(URL):
         price = content_elem.find('p', class_='price').text.strip()
         details = content_elem.find('span').text
         link = content_elem.find('a').get('href').split('#')[0]
-        result += "{}, {}, {}.\n {} \n\n".format(title,price,details,link)
+        ad = "{}, {}, {}.\n {} \n\n".format(title,price,details,link)
+
+        if ad not in ad_list:
+            ad_list.append(ad)
+            result += ad
+
+    with open('olx_list.txt', 'wb') as f:
+        pickle.dump(ad_list, f) 
+
     return result
 
 # Scrapper for imoti.net
@@ -85,6 +149,12 @@ def scrap_imoti(URL):
     results = soup.find('ul', class_='list-view real-estates')
     content_elems = results.find_all('li', class_ = 'clearfix')
 
+    try:
+        with open('imoti_list.txt', 'rb') as f:
+            ad_list = pickle.load(f)
+    except IOError:
+        ad_list = []
+
     result = ""
     price_list_m2 = []
 
@@ -96,31 +166,47 @@ def scrap_imoti(URL):
         location = content_elem.header.div.find('span', class_='location').text
         details = content_elem.select('p')[1].get_text(strip = True)
         link = "https://www.imoti.net" + content_elem.find('a').get('href').split('#')[0]
-        result += "{}, {}, {}, {}.\n {} \n{} \n\n".format(title,price,price_per_m2,location,details,link)
+        ad = "{}, {}, {}, {}.\n {} \n{} \n\n".format(title,price,price_per_m2,location,details,link)
         price_list_m2 += price_per_m2
+
+        if ad not in ad_list:
+            ad_list.append(ad)
+            result += ad
+
+    with open('imoti_list.txt', 'wb') as f:
+        pickle.dump(ad_list, f) 
+
     return result, price_list_m2
 
 for site in sites:
     
     if 'sales.bcpea.org' in site:
         if config.SALES_ENABLED == True:
+
             content_sales = scrap_sales(site)
             subject = "PUBLIC SALES Listings"
-            send_email(content_sales,subject)
+
+            if content_sales:
+                send_email(content_sales,subject)
 
     if 'olx.bg' in site:
         if config.OLX_ENABLED == True:
 
             content_olx = scrap_olx(site)
             subject = "OLX Listings"
-            send_email(content_olx,subject)
+
+            if content_olx:
+                send_email(content_olx,subject)
+                
 
     if 'imoti.net' in site:   
         if config.IMOTI_ENABLED == True:
 
             content_imoti = scrap_imoti(site)[0]
             subject = "IMOTI.NET Listings"
-            send_email(content_imoti,subject)
+
+            if content_imoti:
+                send_email(content_imoti,subject)
 
 
 #Calculating average price per m2
@@ -128,10 +214,8 @@ for site in sites:
 if config.AVERAGE_PRICE_M2_ENABLED == True:
     price_list_m2 = scrap_imoti(config.URL_AVG_PRICE_M2)[1]
     avg = round(calculate_average(price_list_m2))
-    print(avg)
-
-
-
-
-
-
+    #ts = time.time()
+    #insert_date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    unix_time = int(time.time()) 
+    write_db(unix_time,'garage',avg)
+    #print(avg)
