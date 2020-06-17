@@ -11,10 +11,11 @@ def scrap_sales(URL):
     result = ""
     p = 1
 
-    # Opens the content database and imports it to a variable. If the file does not exist, it creates an empty list.
+    # Opens the content database and imports it to a variable. 
+    # If the file does not exist, it creates an empty list.
     try:
         print("Opening the database file and importing to a variable")
-        with open('sales_list.txt', 'rb') as f:
+        with open('sales_list.db', 'rb') as f:
             ad_list = pickle.load(f)
     except IOError:
         ad_list = []
@@ -58,12 +59,10 @@ def scrap_sales(URL):
         p = p + 1
 
     # Dumps the list with ads to a database file
-    print("Saving new adds to a file")
+    print("Saving new records to a file")
     print("{} Records written".format(len(ad_list)))
-    with open('sales_list.txt', 'wb') as f:
+    with open('sales_list.db', 'wb') as f:
         pickle.dump(ad_list, f) 
     return result
 
-        
-final_result = scrap_sales('http://sales.bcpea.org/bg/properties-p1.html?type=16')
-print(final_result)
+scrap_sales('http://sales.bcpea.org/bg/properties-p1.html?court=28&type=8&city=1')
