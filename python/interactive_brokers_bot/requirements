@@ -1,0 +1,6 @@
+Install pip using get-pip.py 
+
+pip install ibapi
+
+add pip and python directories to System Variables %PATH%
+
