@@ -63,4 +63,4 @@ def scrap_olx(URL):
 
     return result
 
-scrap_olx('https://www.olx.bg/nedvizhimi-imoti/prodazhbi/garazhi-parkomesta/oblast-sofiya-grad/?page=1')
+scrap_olx('https://www.olx.bg/nedvizhimi-imoti/prodazhbi/garazhi-parkomesta/oblast-sofiya-grad/q-%D0%B3%D0%B0%D1%80%D0%B0%D0%B6/?page=1')

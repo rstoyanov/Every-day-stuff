@@ -264,37 +264,28 @@ def scrap_imoti(URL):
 
     return result, price_list_m2
 
-# Executing the scrapping and sending an email with the results
-for site in sites:
-    
-    if 'sales.bcpea.org' in site:
-        if config.SALES_ENABLED == True:
+# Class for processing results and sending email
 
-            content_sales = scrap_sales(site)
-            subject = "PUBLIC SALES Listings"
+class EndResults:
+    content_sales = []
+    content_olx = []
+    content_imoti = []
 
-            if content_sales:
-                send_email(content_sales,subject)
+    def __init__(self):
+        print('Processing results')
 
-    if 'olx.bg' in site:
-        if config.OLX_ENABLED == True:
+    def resultsSales(self,sites):
+        self.sites = sites 
 
-            content_olx = scrap_olx(site)
-            subject = "OLX Listings"
+        for site in sites:
+            if 'sales.bcpea.org' in site:
+                if config.SALES_ENABLED == True:
+                    content_sales += scrap_sales(site)
+        if content_sales:
+            send_email(content_sales,subject = 'PUBLIC SALES Listings')
 
-            if content_olx:
-                send_email(content_olx,subject)
-                
-
-    if 'imoti.net' in site:   
-        if config.IMOTI_ENABLED == True:
-
-            content_imoti = scrap_imoti(site)[0]
-            subject = "IMOTI.NET Listings"
-
-            if content_imoti:
-                send_email(content_imoti,subject)
-
+exec = EndResults
+exec.resultsSales(sites)
 
 #Calculating average price per m2
 
